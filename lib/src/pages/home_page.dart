@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:modulo06_component/src/Utils/icono_string_util.dart';
+import 'package:modulo06_component/src/pages/alert_page.dart';
 import 'package:modulo06_component/src/providers/menu.dart';
 
 class HomePage extends StatelessWidget {
@@ -22,28 +24,35 @@ class HomePage extends StatelessWidget {
       initialData: [],
       builder: (context, AsyncSnapshot snapShot) {
         return ListView(
-          children: _crearListItems(snapShot.data),
+          children: _crearListItems(snapShot.data, context),
         );
       },
     );
   }
 
-  List<Widget> _crearListItems( List<dynamic> data ) {
-    return data.map((x ){
+  List<Widget> _crearListItems(List<dynamic> data, BuildContext context) {
+    return data.map((x) {
       return Column(
         children: <Widget>[
-          ListTile( 
-            title: Text( x["texto"]),
-            leading: Icon(Icons.battery_unknown, color: Colors.blue,),
+          ListTile(
+            title: Text(x["texto"]),
+            leading: getIcon(x["icon"]),
             trailing: Icon(Icons.arrow_forward),
-            onTap: (){
+            onTap: () {
+              // final route = MaterialPageRoute(
+              //   builder: (context)  {
+              //     return  AlertPage();
+              //   },
+              // );
+              // Navigator.push(context, route);
 
+              Navigator.pushNamed(context, x["ruta"]);
             },
-             ),
+          ),
           Divider()
         ],
       );
-    } ).toList();
+    }).toList();
     // return [
     //   ListTile(
     //     title: Text("Hola Mundo"),
