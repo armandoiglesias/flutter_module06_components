@@ -6,10 +6,18 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPage extends State<InputPage> {
-
   String _texto = "";
   String _email = "";
   String _fecha = "";
+  String _opcionSeleccionada = "Volar";
+
+  List<String> _poderes = [
+    'Volar',
+    'Rayos X',
+    'Super Aliento',
+    'Super Fuerza',
+    'etc'
+  ];
 
   TextEditingController _inputFieldDateController = TextEditingController();
 
@@ -20,22 +28,21 @@ class _InputPage extends State<InputPage> {
         title: Text("Input Page"),
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(
-          horizontal: 10.0,
-          vertical: 20.0
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
         children: <Widget>[
-        _crearInput(),
-        Divider(),
-        _crearEmail(),
-        Divider(),
-        _crearPassWord(),
-        Divider(),
-        _crearFecha(context),
-        Divider(),
-        _crearPersona(),
-        
-      ],),
+          _crearInput(),
+          Divider(),
+          _crearEmail(),
+          Divider(),
+          _crearPassWord(),
+          Divider(),
+          _crearFecha(context),
+          Divider(),
+          _crearDropDown(),
+          Divider(),
+          _crearPersona(),
+        ],
+      ),
     );
   }
 
@@ -44,28 +51,24 @@ class _InputPage extends State<InputPage> {
       //autofocus: false,
       textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20.0)
-        ),
-        counter: Text(_texto.length.toString()),
-        hintText: "Ingrese Nombre",
-        labelText: "Nombre",
-        helperText: "Solo el nombre",
-        suffixIcon: Icon(Icons.accessibility),
-        icon: Icon(Icons.account_circle)
-
-
-      ),
-      onChanged: (value){
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+          counter: Text(_texto.length.toString()),
+          hintText: "Ingrese Nombre",
+          labelText: "Nombre",
+          helperText: "Solo el nombre",
+          suffixIcon: Icon(Icons.accessibility),
+          icon: Icon(Icons.account_circle)),
+      onChanged: (value) {
         setState(() {
-          _texto = value; 
+          _texto = value;
         });
-      } ,
+      },
     );
   }
 
   Widget _crearPersona() {
     return ListTile(
+      trailing: Text(_opcionSeleccionada),
       title: Text("Nombre es: $_texto"),
       subtitle: Text("Email es: $_email "),
     );
@@ -75,20 +78,15 @@ class _InputPage extends State<InputPage> {
     return TextField(
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20.0)
-        ),
-        labelText: "Email",
-        suffixIcon: Icon(Icons.alternate_email),
-        icon: Icon(Icons.email)
-
-
-      ),
-      onChanged: (value){
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+          labelText: "Email",
+          suffixIcon: Icon(Icons.alternate_email),
+          icon: Icon(Icons.email)),
+      onChanged: (value) {
         setState(() {
-          _email = value; 
+          _email = value;
         });
-      } ,
+      },
     );
   }
 
@@ -97,20 +95,15 @@ class _InputPage extends State<InputPage> {
       obscureText: true,
       keyboardType: TextInputType.visiblePassword,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20.0)
-        ),
-        labelText: "Password",
-        suffixIcon: Icon(Icons.lock_open),
-        icon: Icon(Icons.lock_open)
-
-
-      ),
-      onChanged: (value){
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+          labelText: "Password",
+          suffixIcon: Icon(Icons.lock_open),
+          icon: Icon(Icons.lock_open)),
+      onChanged: (value) {
         setState(() {
-          //_email = value; 
+          //_email = value;
         });
-      } ,
+      },
     );
   }
 
@@ -119,38 +112,66 @@ class _InputPage extends State<InputPage> {
       controller: _inputFieldDateController,
       enableInteractiveSelection: false,
       decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20.0)
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
         labelText: "Fecha de Nacimiento",
         hintText: "Seleccione una fecha",
         suffixIcon: Icon(Icons.perm_contact_calendar),
         icon: Icon(Icons.calendar_today),
       ),
-      
-      onTap: (){
-        FocusScope.of(context).requestFocus( new FocusNode() );
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
         _selectDate(context);
       },
-      
     );
   }
 
   _selectDate(BuildContext context) async {
     DateTime picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now() ,
-      firstDate: DateTime(2018),
-      lastDate: DateTime(2025),
-      locale: Locale('es', 'CL')
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2018),
+        lastDate: DateTime(2025),
+        locale: Locale('es', 'CL'));
 
-    );
-
-    if (picked != null){
+    if (picked != null) {
       setState(() {
-       _fecha = picked.toString(); 
-       _inputFieldDateController.text = _fecha;
+        _fecha = picked.toString();
+        _inputFieldDateController.text = _fecha;
       });
     }
+  }
+
+  List<DropdownMenuItem<String>> getDropDownOptions() {
+    List<DropdownMenuItem<String>> lista = List();
+    _poderes.forEach((poder) {
+      lista.add(DropdownMenuItem(
+        child: Text(poder),
+        value: poder,
+      ));
+    });
+    return lista;
+  }
+
+  Widget _crearDropDown() {
+    return Row(
+      children: <Widget>[
+        Icon(Icons.select_all),
+        SizedBox(
+          width: 30.0,
+        ),
+        Expanded(
+          child: DropdownButton(
+            value: _opcionSeleccionada,
+            items: getDropDownOptions(),
+            onChanged: (value) {
+              setState(() {
+                _opcionSeleccionada = value;
+              });
+              print(value);
+            },
+          ),
+        ),
+      ],
+    );
   }
 }
