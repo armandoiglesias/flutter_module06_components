@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:modulo06_component/src/Utils/icono_string_util.dart';
-import 'package:modulo06_component/src/pages/alert_page.dart';
 import 'package:modulo06_component/src/providers/menu.dart';
 
 class HomePage extends StatelessWidget {
